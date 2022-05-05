@@ -162,7 +162,6 @@ function airdropTokens(amount, payer, userTokenAcct, mint, mintAuth) {
         };
         const ixBuffer = buffer_1.Buffer.alloc(9);
         IX_DATA_LAYOUT.encode(payload, ixBuffer);
-        //console.log(ixBuffer)
         const ix = userInputIx(ixBuffer, payer, userTokenAcct, mint, mintAuth);
         tx.add(ix);
         if ((yield connection.getBalance(wallet.publicKey)) < 1.0) {

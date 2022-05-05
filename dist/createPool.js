@@ -45,7 +45,6 @@ const connection = new Web3.Connection(RPC_ENDPOINT_URL, commitment);
 const id_json_path = require('os').homedir() + "/.config/solana/test-wallet.json";
 const secret = Uint8Array.from(JSON.parse(require("fs").readFileSync(id_json_path)));
 const wallet = Web3.Keypair.fromSecretKey(secret);
-const TOKEN_SWAP_ACCOUNT_LEN = 324;
 const FEE_OWNER = new Web3.PublicKey("HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN");
 function createTokenSwap() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -63,7 +62,7 @@ function createTokenSwap() {
         });
         tx.add(swapAcctIx);
         // derive pda from Token swap program for swap authority
-        const [swapAuthority, nonce] = yield Web3.PublicKey.findProgramAddress([tokenSwapStateAccount.publicKey.toBuffer()], spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID);
+        const [swapAuthority, bump] = yield Web3.PublicKey.findProgramAddress([tokenSwapStateAccount.publicKey.toBuffer()], spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID);
         console.log("Swap authority PDA: ", swapAuthority.toBase58());
         // create Associated Token Accounts owned by the swap auth PDA that will be used as pool accounts and airdrop tokens
         const tokenAPoolATAIX = yield (0, createTokens_1.createATA)(createTokens_1.kryptMint, swapAuthority, wallet);
@@ -118,7 +117,7 @@ function createTokenSwap() {
                 hostFeeDenominator: 100
             }
         };
-        const createSwapIx = yield (0, utils_1.createInitSwapInstruction)(tokenSwapStateAccount.publicKey, swapAuthority, tokenAPoolATA, tokenBPoolATA, poolTokenMint, feeAccountAta, tokenAccountPool.publicKey, spl_token_1.TOKEN_PROGRAM_ID, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, nonce, poolConfig);
+        const createSwapIx = yield (0, utils_1.createInitSwapInstruction)(tokenSwapStateAccount.publicKey, swapAuthority, tokenAPoolATA, tokenBPoolATA, poolTokenMint, feeAccountAta, tokenAccountPool.publicKey, spl_token_1.TOKEN_PROGRAM_ID, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, bump, poolConfig);
         tx.add(createSwapIx);
         console.log("sending tx");
         let txid = yield Web3.sendAndConfirmTransaction(connection, tx, [wallet, tokenSwapStateAccount, tokenAccountPool], {
