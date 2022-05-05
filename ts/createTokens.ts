@@ -18,11 +18,11 @@ const wallet = Web3.Keypair.fromSecretKey(secret as Uint8Array);
 export const airdropProgramId = new Web3.PublicKey("CPEV4ibq2VUv7UnNpkzUGL82VRzotbv2dy8vGwRfh3H3")
 export const airdropPDA = new Web3.PublicKey("99ynLfSvcRXwYMKv4kmbcAyGxhfD7KfgrsuHTx9Dvoot")
 
- const userInputIx = (i: Buffer, payer: Web3.Keypair, user: Web3.PublicKey, mint: Web3.PublicKey, mintAuth: Web3.PublicKey) => {
+ const userInputIx = (i: Buffer, payer: Web3.PublicKey, user: Web3.PublicKey, mint: Web3.PublicKey, mintAuth: Web3.PublicKey) => {
   return new web3.TransactionInstruction({
     keys: [
       {
-        pubkey: payer.publicKey,
+        pubkey: payer,
         isSigner: true,
         isWritable: true,
       },
@@ -159,8 +159,8 @@ export async function airdropLamps(user: Web3.PublicKey){
   }
 }
 
-export async function airdropTokens(amount: number, payer: web3.Keypair, userTokenAcct: Web3.PublicKey, mint: Web3.PublicKey, mintAuth: Web3.PublicKey){
-  const tx = new Web3.Transaction()
+export async function airdropTokens(amount: number, payer: web3.PublicKey, userTokenAcct: Web3.PublicKey, mint: Web3.PublicKey, mintAuth: Web3.PublicKey){
+  //const tx = new Web3.Transaction()
   const payload = {
     variant: 0,
     amount: amount
@@ -169,7 +169,7 @@ export async function airdropTokens(amount: number, payer: web3.Keypair, userTok
   IX_DATA_LAYOUT.encode(payload, ixBuffer)
   
   const ix = userInputIx(ixBuffer, payer, userTokenAcct, mint, mintAuth)
-  tx.add(ix)
+  //tx.add(ix)
 
   if ((await connection.getBalance(wallet.publicKey)) < 1.0) {
     console.log("Requesting Airdrop of 2 SOL...");
@@ -177,7 +177,7 @@ export async function airdropTokens(amount: number, payer: web3.Keypair, userTok
     console.log("Airdrop received");
   }
 
-  return tx
+  return ix
 }
 
 async function changeAuth(){

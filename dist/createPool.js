@@ -75,9 +75,9 @@ function createTokenSwap() {
         const tokenBPoolATA = yield (0, createTokens_1.getATA)(createTokens_1.ScroogeCoinMint, swapAuthority);
         console.log("ScroogeCoing token account: ", tokenBPoolATA.toBase58());
         // airdropping tokens
-        const airdropAIx = yield (0, createTokens_1.airdropTokens)(10000, wallet, tokenAPoolATA, createTokens_1.kryptMint, createTokens_1.airdropPDA);
+        const airdropAIx = yield (0, createTokens_1.airdropTokens)(10000, wallet.publicKey, tokenAPoolATA, createTokens_1.kryptMint, createTokens_1.airdropPDA);
         tx.add(airdropAIx);
-        const airdropBIx = yield (0, createTokens_1.airdropTokens)(10000, wallet, tokenBPoolATA, createTokens_1.ScroogeCoinMint, createTokens_1.airdropPDA);
+        const airdropBIx = yield (0, createTokens_1.airdropTokens)(10000, wallet.publicKey, tokenBPoolATA, createTokens_1.ScroogeCoinMint, createTokens_1.airdropPDA);
         tx.add(airdropBIx);
         // create pool token mint and pool token accounts
         console.log('creating pool mint');

@@ -51,7 +51,7 @@ const userInputIx = (i, payer, user, mint, mintAuth) => {
     return new anchor_1.web3.TransactionInstruction({
         keys: [
             {
-                pubkey: payer.publicKey,
+                pubkey: payer,
                 isSigner: true,
                 isWritable: true,
             },
@@ -155,7 +155,7 @@ function airdropLamps(user) {
 exports.airdropLamps = airdropLamps;
 function airdropTokens(amount, payer, userTokenAcct, mint, mintAuth) {
     return __awaiter(this, void 0, void 0, function* () {
-        const tx = new Web3.Transaction();
+        //const tx = new Web3.Transaction()
         const payload = {
             variant: 0,
             amount: amount
@@ -163,13 +163,13 @@ function airdropTokens(amount, payer, userTokenAcct, mint, mintAuth) {
         const ixBuffer = buffer_1.Buffer.alloc(9);
         IX_DATA_LAYOUT.encode(payload, ixBuffer);
         const ix = userInputIx(ixBuffer, payer, userTokenAcct, mint, mintAuth);
-        tx.add(ix);
+        //tx.add(ix)
         if ((yield connection.getBalance(wallet.publicKey)) < 1.0) {
             console.log("Requesting Airdrop of 2 SOL...");
             yield connection.requestAirdrop(wallet.publicKey, 2e9);
             console.log("Airdrop received");
         }
-        return tx;
+        return ix;
     });
 }
 exports.airdropTokens = airdropTokens;

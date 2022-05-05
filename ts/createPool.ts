@@ -54,9 +54,9 @@ async function createTokenSwap(
     const tokenBPoolATA = await getATA(ScroogeCoinMint, swapAuthority)
     console.log("ScroogeCoing token account: ",tokenBPoolATA.toBase58())
     // airdropping tokens
-    const airdropAIx = await airdropTokens(10000, wallet, tokenAPoolATA, kryptMint, airdropPDA)
+    const airdropAIx = await airdropTokens(10000, wallet.publicKey, tokenAPoolATA, kryptMint, airdropPDA)
     tx.add(airdropAIx)
-    const airdropBIx = await airdropTokens(10000, wallet, tokenBPoolATA, ScroogeCoinMint, airdropPDA)
+    const airdropBIx = await airdropTokens(10000, wallet.publicKey, tokenBPoolATA, ScroogeCoinMint, airdropPDA)
     tx.add(airdropBIx)
 
     // create pool token mint and pool token accounts
