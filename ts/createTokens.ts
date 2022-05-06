@@ -4,7 +4,7 @@ import { createInitializeMintInstruction, AuthorityType, setAuthority, createAss
   getMinimumBalanceForRentExemptMint, MINT_SIZE, TOKEN_PROGRAM_ID, getOrCreateAssociatedTokenAccount, mintTo, mintToChecked } from '@solana/spl-token'
 import { web3 } from '@project-serum/anchor'
 import { Buffer } from 'buffer';
-import * as borsh from "@project-serum/borsh";
+import * as borsh from '@project-serum/borsh'
 
 const RPC_ENDPOINT_URL = "https://api.devnet.solana.com";
 const commitment = 'confirmed';

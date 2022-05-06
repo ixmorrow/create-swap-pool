@@ -21,10 +21,10 @@ async function deposit(){
 
     const tx = new Web3.Transaction()
 
-    const airdropAIX = await airdropTokens(20e9, wallet.publicKey, sourceA, kryptMint, airdropPDA)
-    tx.add(airdropAIX)
-    const airdropBIX = await airdropTokens(20e9, wallet.publicKey, sourceB, ScroogeCoinMint, airdropPDA)
-    tx.add(airdropBIX)
+    // const airdropAIX = await airdropTokens(20, wallet.publicKey, sourceA, kryptMint, airdropPDA)
+    // tx.add(airdropAIX)
+    // const airdropBIX = await airdropTokens(20, wallet.publicKey, sourceB, ScroogeCoinMint, airdropPDA)
+    // tx.add(airdropBIX)
 
     const depositIx = await TokenSwap.depositAllTokenTypesInstruction(
         token_swap_state_account,
@@ -38,9 +38,9 @@ async function deposit(){
         token_account_pool,
         TOKEN_SWAP_PROGRAM_ID,
         TOKEN_PROGRAM_ID,
-        5e9,
-        10e9,
-        10e9
+        1e2,
+        100e9,
+        100e9
     )
 
     tx.add(depositIx)

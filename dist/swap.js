@@ -47,11 +47,11 @@ const wallet = Web3.Keypair.fromSecretKey(secret);
 function swap() {
     return __awaiter(this, void 0, void 0, function* () {
         const tx = new Web3.Transaction();
-        const userSource = yield (0, createTokens_1.getATA)(createTokens_1.kryptMint, wallet.publicKey);
-        const userDestination = yield (0, createTokens_1.getATA)(createTokens_1.ScroogeCoinMint, wallet.publicKey);
+        const userSource = yield (0, createTokens_1.getATA)(createTokens_1.ScroogeCoinMint, wallet.publicKey);
+        const userDestination = yield (0, createTokens_1.getATA)(createTokens_1.kryptMint, wallet.publicKey);
         // const airdropIx = await airdropTokens(10, wallet.publicKey, userSource, kryptMint, airdropPDA)
         // tx.add(airdropIx)
-        const swapIx = spl_token_swap_1.TokenSwap.swapInstruction(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, userSource, consts_1.pool_krypt_account, consts_1.pool_scrooge_account, userDestination, consts_1.pool_mint, consts_1.fee_account, null, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 1e9, 1);
+        const swapIx = spl_token_swap_1.TokenSwap.swapInstruction(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, userSource, consts_1.pool_scrooge_account, consts_1.pool_krypt_account, userDestination, consts_1.pool_mint, consts_1.fee_account, null, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 1e9, 1);
         tx.add(swapIx);
         console.log("sending tx");
         let txid = yield Web3.sendAndConfirmTransaction(connection, tx, [wallet], {

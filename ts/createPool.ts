@@ -1,9 +1,9 @@
 import { airdropTokens, createATA, kryptMint, ScroogeCoinMint, airdropLamps, airdropPDA, airdropProgramId, getATA } from "./createTokens";
 import { Numberu64, TokenSwap, TOKEN_SWAP_PROGRAM_ID, TokenSwapLayout } from "@solana/spl-token-swap"
 import * as Web3 from '@solana/web3.js'
-import { PoolConfig, CurveType } from "@project-serum/spl-token-swap"
 import { createMint, getAccount, ACCOUNT_SIZE, getMint, getMinimumBalanceForRentExemptAccount, createInitializeAccountInstruction, TOKEN_PROGRAM_ID, MintLayout, createInitializeMintInstruction } from "@solana/spl-token";
 import * as BufferLayout from '@solana/buffer-layout';
+import { PoolConfig, CurveType } from "@project-serum/spl-token-swap"
 import { createInitSwapInstruction, UTILS_TOKEN_PROGRAM_ID } from "./utils";
 
 const RPC_ENDPOINT_URL = "https://api.devnet.solana.com";

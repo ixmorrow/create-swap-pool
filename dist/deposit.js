@@ -49,11 +49,11 @@ function deposit() {
         const sourceA = yield (0, createTokens_1.getATA)(createTokens_1.kryptMint, wallet.publicKey);
         const sourceB = yield (0, createTokens_1.getATA)(createTokens_1.ScroogeCoinMint, wallet.publicKey);
         const tx = new Web3.Transaction();
-        const airdropAIX = yield (0, createTokens_1.airdropTokens)(20e9, wallet.publicKey, sourceA, createTokens_1.kryptMint, createTokens_1.airdropPDA);
-        tx.add(airdropAIX);
-        const airdropBIX = yield (0, createTokens_1.airdropTokens)(20e9, wallet.publicKey, sourceB, createTokens_1.ScroogeCoinMint, createTokens_1.airdropPDA);
-        tx.add(airdropBIX);
-        const depositIx = yield spl_token_swap_1.TokenSwap.depositAllTokenTypesInstruction(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, sourceA, sourceB, consts_1.pool_krypt_account, consts_1.pool_scrooge_account, consts_1.pool_mint, consts_1.token_account_pool, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 5e9, 10e9, 10e9);
+        // const airdropAIX = await airdropTokens(20, wallet.publicKey, sourceA, kryptMint, airdropPDA)
+        // tx.add(airdropAIX)
+        // const airdropBIX = await airdropTokens(20, wallet.publicKey, sourceB, ScroogeCoinMint, airdropPDA)
+        // tx.add(airdropBIX)
+        const depositIx = yield spl_token_swap_1.TokenSwap.depositAllTokenTypesInstruction(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, sourceA, sourceB, consts_1.pool_krypt_account, consts_1.pool_scrooge_account, consts_1.pool_mint, consts_1.token_account_pool, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 1e2, 100e9, 100e9);
         tx.add(depositIx);
         console.log("sending tx");
         let txid = yield Web3.sendAndConfirmTransaction(connection, tx, [wallet], {

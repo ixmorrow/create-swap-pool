@@ -18,8 +18,8 @@ const wallet = Web3.Keypair.fromSecretKey(secret as Uint8Array);
 async function swap() {
     const tx = new Web3.Transaction()
 
-    const userSource = await getATA(kryptMint, wallet.publicKey)
-    const userDestination = await getATA(ScroogeCoinMint, wallet.publicKey)
+    const userSource = await getATA(ScroogeCoinMint, wallet.publicKey)
+    const userDestination = await getATA(kryptMint, wallet.publicKey)
 
     // const airdropIx = await airdropTokens(10, wallet.publicKey, userSource, kryptMint, airdropPDA)
     // tx.add(airdropIx)
@@ -29,8 +29,8 @@ async function swap() {
       swap_authority,
       wallet.publicKey,
       userSource,
-      pool_krypt_account,
       pool_scrooge_account,
+      pool_krypt_account,
       userDestination,
       pool_mint,
       fee_account,
