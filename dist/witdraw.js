@@ -44,15 +44,13 @@ const connection = new Web3.Connection(RPC_ENDPOINT_URL, commitment);
 const id_json_path = require('os').homedir() + "/.config/solana/test-wallet.json";
 const secret = Uint8Array.from(JSON.parse(require("fs").readFileSync(id_json_path)));
 const wallet = Web3.Keypair.fromSecretKey(secret);
-function swap() {
+function withdraw() {
     return __awaiter(this, void 0, void 0, function* () {
+        const userA = yield (0, createTokens_1.getATA)(createTokens_1.kryptMint, wallet.publicKey);
+        const userB = yield (0, createTokens_1.getATA)(createTokens_1.ScroogeCoinMint, wallet.publicKey);
         const tx = new Web3.Transaction();
-        const userSource = yield (0, createTokens_1.getATA)(createTokens_1.kryptMint, wallet.publicKey);
-        const userDestination = yield (0, createTokens_1.getATA)(createTokens_1.ScroogeCoinMint, wallet.publicKey);
-        // const airdropIx = await airdropTokens(10, wallet.publicKey, userSource, kryptMint, airdropPDA)
-        // tx.add(airdropIx)
-        const swapIx = spl_token_swap_1.TokenSwap.swapInstruction(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, userSource, consts_1.pool_krypt_account, consts_1.pool_scrooge_account, userDestination, consts_1.pool_mint, consts_1.fee_account, null, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 1e9, 1);
-        tx.add(swapIx);
+        const withdrawIX = yield spl_token_swap_1.TokenSwap.withdrawAllTokenTypesInstruction(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, consts_1.pool_mint, consts_1.fee_account, consts_1.token_account_pool, consts_1.pool_krypt_account, consts_1.pool_scrooge_account, userA, userB, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 2, 1, 1);
+        tx.add(withdrawIX);
         console.log("sending tx");
         let txid = yield Web3.sendAndConfirmTransaction(connection, tx, [wallet], {
             skipPreflight: true,
@@ -61,4 +59,4 @@ function swap() {
         console.log(`https://explorer.solana.com/tx/${txid}?cluster=devnet`);
     });
 }
-swap();
+withdraw();

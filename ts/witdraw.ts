@@ -14,36 +14,30 @@ const id_json_path = require('os').homedir() + "/.config/solana/test-wallet.json
 const secret = Uint8Array.from(JSON.parse(require("fs").readFileSync(id_json_path)));
 const wallet = Web3.Keypair.fromSecretKey(secret as Uint8Array);
 
-
-async function deposit(){
-    const sourceA = await getATA(kryptMint, wallet.publicKey)
-    const sourceB = await getATA(ScroogeCoinMint, wallet.publicKey)
-
+async function withdraw(){
+    const userA = await getATA(kryptMint, wallet.publicKey)
+    const userB = await getATA(ScroogeCoinMint, wallet.publicKey)
     const tx = new Web3.Transaction()
 
-    const airdropAIX = await airdropTokens(20e9, wallet.publicKey, sourceA, kryptMint, airdropPDA)
-    tx.add(airdropAIX)
-    const airdropBIX = await airdropTokens(20e9, wallet.publicKey, sourceB, ScroogeCoinMint, airdropPDA)
-    tx.add(airdropBIX)
-
-    const depositIx = await TokenSwap.depositAllTokenTypesInstruction(
+    const withdrawIX = await TokenSwap.withdrawAllTokenTypesInstruction(
         token_swap_state_account,
         swap_authority,
         wallet.publicKey,
-        sourceA,
-        sourceB,
+        pool_mint,
+        fee_account,
+        token_account_pool,
         pool_krypt_account,
         pool_scrooge_account,
-        pool_mint,
-        token_account_pool,
+        userA,
+        userB,
         TOKEN_SWAP_PROGRAM_ID,
         TOKEN_PROGRAM_ID,
-        5e9,
-        10e9,
-        10e9
+        2,
+        1,
+        1
     )
 
-    tx.add(depositIx)
+    tx.add(withdrawIX)
 
     console.log("sending tx");
     let txid = await Web3.sendAndConfirmTransaction(connection, tx, [wallet], {
@@ -54,4 +48,4 @@ async function deposit(){
     console.log(`https://explorer.solana.com/tx/${txid}?cluster=devnet`);
 }
 
-deposit()
+withdraw()
