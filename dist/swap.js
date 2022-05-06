@@ -31,14 +31,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.swapInstruction = exports.uint64 = void 0;
 const createTokens_1 = require("./createTokens");
 const spl_token_swap_1 = require("@solana/spl-token-swap");
 const Web3 = __importStar(require("@solana/web3.js"));
+//import { PoolConfig, CurveType } from "@project-serum/spl-token-swap"
 const spl_token_1 = require("@solana/spl-token");
 const consts_1 = require("./consts");
-const borsh = __importStar(require("@project-serum/borsh"));
+const BufferLayout = require('buffer-layout');
+const bn_js_1 = __importDefault(require("bn.js"));
 const buffer_layout_1 = require("buffer-layout");
 const RPC_ENDPOINT_URL = "https://api.devnet.solana.com";
 const commitment = 'confirmed';
@@ -54,7 +59,22 @@ function swap() {
         const userDestination = yield (0, createTokens_1.getATA)(createTokens_1.ScroogeCoinMint, wallet.publicKey);
         // const airdropIx = await airdropTokens(10, wallet.publicKey, userSource, kryptMint, airdropPDA)
         // tx.add(airdropIx)
-        const swapIx = yield (0, exports.swapInstruction)(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, userSource, consts_1.pool_krypt_account, consts_1.pool_scrooge_account, userDestination, consts_1.pool_mint, consts_1.fee_account, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 5, 0.5);
+        // const swapIx = await swapInstruction(
+        //     token_swap_state_account,
+        //     swap_authority,
+        //     wallet.publicKey,
+        //     userSource,
+        //     pool_krypt_account,
+        //     pool_scrooge_account,
+        //     userDestination,
+        //     pool_mint,
+        //     fee_account,
+        //     TOKEN_SWAP_PROGRAM_ID,
+        //     TOKEN_PROGRAM_ID,
+        //     5,
+        //     0.5
+        // )
+        const swapIx = spl_token_swap_1.TokenSwap.swapInstruction(consts_1.token_swap_state_account, consts_1.swap_authority, wallet.publicKey, userSource, consts_1.pool_krypt_account, consts_1.pool_scrooge_account, userDestination, consts_1.pool_mint, consts_1.fee_account, null, spl_token_swap_1.TOKEN_SWAP_PROGRAM_ID, spl_token_1.TOKEN_PROGRAM_ID, 1e9, 1);
         tx.add(swapIx);
         console.log("sending tx");
         let txid = yield Web3.sendAndConfirmTransaction(connection, tx, [wallet], {
@@ -69,11 +89,17 @@ const uint64 = (property = 'uint64') => {
 };
 exports.uint64 = uint64;
 const swapInstruction = (tokenSwap, authority, transferAuthority, userSource, poolSource, poolDestination, userDestination, poolMint, feeAccount, swapProgramId, tokenProgramId, amountIn, minimumAmountOut, programOwner) => {
-    const IX_DATA_LAYOUT = borsh.struct([
-        borsh.u8("instruction"),
-        borsh.u32("amountIn"),
-        borsh.f64("minimumAmountOut")
+    const dataLayout = buffer_layout_1.Layout.struct([
+        BufferLayout.u8("instruction"),
+        buffer_layout_1.Layout.nu64("amountIn"),
+        buffer_layout_1.Layout.nu64("minimumAmountOut")
     ]);
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode({
+        instruction: 1,
+        amountIn: new bn_js_1.default(amountIn),
+        minimumAmountOut: new bn_js_1.default(minimumAmountOut)
+    }, data);
     const keys = [
         { pubkey: tokenSwap, isSigner: false, isWritable: false },
         { pubkey: authority, isSigner: false, isWritable: false },
@@ -86,13 +112,6 @@ const swapInstruction = (tokenSwap, authority, transferAuthority, userSource, po
         { pubkey: feeAccount, isSigner: false, isWritable: true },
         { pubkey: tokenProgramId, isSigner: false, isWritable: false },
     ];
-    const payload = {
-        instruction: 1,
-        amountIn: amountIn,
-        minimumAmountOut: minimumAmountOut
-    };
-    const data = Buffer.alloc(IX_DATA_LAYOUT.span);
-    IX_DATA_LAYOUT.encode(payload, data);
     return new Web3.TransactionInstruction({
         keys,
         programId: swapProgramId,
